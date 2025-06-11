@@ -1,25 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+const App = () => {
+  const hoje = new Date()
+  const a = 10
+  const b = 20
+  console.log(hoje, a + b)
 
-function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <p>Olá, mundo! Hoje é {hoje.toString()}</p>
+      <p>
+        {a} mais {b} é {a + b}
+      </p>
+      
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

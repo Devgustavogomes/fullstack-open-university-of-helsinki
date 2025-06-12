@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react'
 
-function App() {
+const Exibir = ({ contador }) => <div>{contador}</div>
+
+const Botao = ({ onClick, texto }) => <button onClick={onClick}>{texto}</button>
+
+const App = () => {
+  const [contador, setContador] = useState(0)
+
+  const aumentarEmUm = () => setContador(contador + 1)
+  const diminuirEmUm = () => setContador(contador - 1)
+  const zerarContador = () => setContador(0)
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <div>
+      <Exibir contador={contador} />
 
+      <Botao
+        onClick={aumentarEmUm}
+        texto='mais+'
+      />
+      <Botao
+        onClick={zerarContador}
+        texto='zerar'
+      />
+      <Botao
+        onClick={diminuirEmUm}
+        texto='menos-'
+      />
+    </div>
+  )
+}
 export default App;

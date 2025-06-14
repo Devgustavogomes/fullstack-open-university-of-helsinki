@@ -19,11 +19,12 @@ const Button = ({ name, handleClick }) => {
   )
 }
 
-const StatisticsLine = ({ content }) => {
+const StatisticsLine = ({ text, value }) => {
   return (
-    <div>
-      <p>{content}</p>
-    </div>
+    <tr>
+      <td>{text}</td>
+      <td>{value}</td>
+    </tr>
   )
 }
 
@@ -32,14 +33,16 @@ const Statistics = ({ statistics }) => {
     <>
       <Text content='Statistics' />
       {statistics.total > 0 ?
-        (<div>
-          <StatisticsLine content={`good: ${statistics.good}`} />
-          <StatisticsLine content={`neutral: ${statistics.neutral}`} />
-          <StatisticsLine content={`bad: ${statistics.bad}`} />
-          <StatisticsLine content={`all: ${statistics.total}`} />
-          <StatisticsLine content={`average: ${statistics.points / statistics.total}`} />
-          <StatisticsLine content={`positive: ${(statistics.good / statistics.total) * 100}%`} />
-        </div>) : ('No feedback given')}
+        (<table>
+          <tbody>
+            <StatisticsLine text='good' value={statistics.good} />
+            <StatisticsLine text='neutral' value={statistics.neutral} />
+            <StatisticsLine text='bad' value={statistics.bad} />
+            <StatisticsLine text='total' value={statistics.total} />
+            <StatisticsLine text='average' value={statistics.points / statistics.total} />
+            <StatisticsLine text='positive' value={(statistics.good / statistics.total) * 100} />
+          </tbody>
+        </table>) : ('No feedback given')}
     </>
 
   )

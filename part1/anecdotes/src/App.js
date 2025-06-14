@@ -18,12 +18,9 @@ const Button = ({ text, handleClick }) => {
 
 const MostVotes = ({ anecdotes, pontos }) => {
   const anecdoteMostVote = () => {
-    let maior;
+    let maior = pontos[0];
     let maiorIndex = 0;
-    for (let i = 0; i < anecdotes.length; i++) {
-      if (i === 0) {
-        maior = pontos[i]
-      }
+    for (let i = 1; i < anecdotes.length; i++) {
       if (pontos[i] > maior) {
         maior = pontos[i];
         maiorIndex = i

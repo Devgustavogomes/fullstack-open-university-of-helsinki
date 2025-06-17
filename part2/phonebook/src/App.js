@@ -1,45 +1,107 @@
+import './index.css'
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
 import Text from './components/Text'
 import PersonForm from './components/PersonForm'
+import PhoneServices from './services/PhoneServices'
+import ConfirmNotification from './components/ConfirmNotification'
+import ErrorNotification from './components/errorNotification'
 
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  const [id, setId] = useState(0)
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState(false)
   const [personFilter, setPersonFilter] = useState('')
+  const [confirmMessage, setConfirmMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => {
-        console.log('promise fullfiled')
-        setPersons(response.data)
+    PhoneServices
+      .getAll()
+      .then(listPerson => setPersons(listPerson))
+      .catch((error) => {
+        setErrorMessage(`ERROR: ${error}`)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
   }, [])
 
   const addName = (event) => {
     event.preventDefault()
-
-    setId(id + 1);
-
     const personObject = {
       name: newName,
-      number: newNumber,
-      id: id
+      number: newNumber
     }
 
     if (!persons.find(person => person.name.toLowerCase() === newName.toLowerCase())) {
-      setPersons(persons.concat(personObject));
-    } else {
-      alert(`${newName} is already added to phonebook`)
-    }
+      PhoneServices
+        .addPerson(personObject)
+        .then(newPerson => {
+          setConfirmMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setConfirmMessage(null)
+          }, 5000)
+          setPersons(persons.concat(newPerson))
+        })
+        .catch((error) => {
+          setErrorMessage(`ERROR: ${error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
 
+
+    } else {
+      if (window.confirm(`${newName} is already added to phonebook, you want change?`)) {
+        const changePerson = persons.find(person => person.name === newName)
+        const personId = changePerson.id
+        const personChanged = { ...changePerson, number: newNumber }
+        PhoneServices
+          .change(personId, personChanged)
+          .then((returnedPerson => setPersons(persons.map(person => {
+            setConfirmMessage(`Changed ${newName}`)
+            setTimeout(() => {
+              setConfirmMessage(null)
+            }, 5000)
+            return person.id !== personId ? person : returnedPerson
+          }
+          ))))
+          .catch((error) => {
+            setErrorMessage(`ERROR: ${error}`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
+
+
+
+      }
+    }
+  }
+
+  const handleClickDelete = (id, name) => {
+    if (window.confirm(`delete ${name}?`)) {
+      PhoneServices
+        .deletePerson(id)
+        .then(() => {
+          setConfirmMessage(`Deleted ${name}`)
+          setTimeout(() => {
+            setConfirmMessage(null)
+          }, 5000)
+          setPersons(persons.filter(p => p.id !== id))
+        })
+        .catch((error) => {
+          setErrorMessage(`ERROR: ${error}`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+        })
+
+    }
   }
 
   const inputName = (event) => {
@@ -64,18 +126,27 @@ const App = () => {
     setPersonFilter(event.target.value.trim())
   }
 
-  const numberToShow = filter
+  const personsToShow = filter
     ? persons.filter(person => person.name === personFilter)
     : persons
 
   return (
     <div>
+      <ConfirmNotification message={confirmMessage} />
+      <ErrorNotification message={errorMessage} />
       <Text content='Phonebook' />
       <Filter inputFilter={inputFilter} />
       <Text content='add a new' />
       <PersonForm addName={addName} inputName={inputName} inputNumber={inputNumber} />
       <Text content='Numbers' />
-      <Persons persons={numberToShow} />
+      {personsToShow.map(person => {
+        return (
+          <div key={person.id}>
+            <Persons name={person.name} number={person.number} handleClickDelete={() => handleClickDelete(person.id, person.name)} />
+          </div>
+        )
+      })}
+
     </div>
   )
 }

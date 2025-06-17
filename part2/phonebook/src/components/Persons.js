@@ -1,16 +1,10 @@
-const Persons = ({ addName, inputName, inputNumber }) => {
+const Persons = ({ persons }) => {
     return (
-        <form onSubmit={addName}>
-            <div>
-                name: <input onInput={inputName} />
-            </div>
-            <div>
-                number: <input onChange={inputNumber} />
-            </div>
-            <div>
-                <button type="submit">add</button>
-            </div>
-        </form>
+        <div>
+            {persons.map(person => {
+                return <p key={person.id}>{`${person.name} ${person.number}`}</p>
+            })}
+        </div>
     )
 }
 

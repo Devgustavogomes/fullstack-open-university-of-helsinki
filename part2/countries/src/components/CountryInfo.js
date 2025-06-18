@@ -1,8 +1,7 @@
-import axios from "axios"
 import { useState, useEffect } from "react"
+import CountryServices from "../services/CountryServices";
 
 const CountryInfo = ({ countriesToShow }) => {
-    const apiKey = process.env.REACT_APP_API_KEY;
     const [countrySelected, setCountrySelected] = useState(null)
     const [weatherCountrySelected, setWeatherCountrySelected] = useState(null)
 
@@ -17,9 +16,9 @@ const CountryInfo = ({ countriesToShow }) => {
 
     useEffect(() => {
         if (countrySelected) {
-            axios
-                .get(`https://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${countrySelected.name.common}`)
-                .then(response => setWeatherCountrySelected(response.data))
+            CountryServices
+                .getWeather(countrySelected.name.common)
+                .then(returnedWeather => setWeatherCountrySelected(returnedWeather))
         }
     }, [countrySelected])
 

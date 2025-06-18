@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios'
 import './App.css';
 import CountryInfo from './components/CountryInfo';
+import FormCountry from './components/FormCountry';
+import CountryServices from './services/CountryServices';
 
 
 
@@ -11,10 +12,9 @@ function App() {
   const [countriesToShow, setCountriesToShow] = useState([])
 
   useEffect(() => {
-    axios
-      .get(`https://studies.cs.helsinki.fi/restcountries/api/all`)
-      .then(response => setCountries(response.data))
-
+    CountryServices
+      .getCountries()
+      .then(returnedCountries => setCountries(returnedCountries))
   }, [])
 
   const inputCountry = (event) => {
@@ -28,9 +28,7 @@ function App() {
 
   return (
     <div>
-      <form onSubmit={(e) => e.preventDefault()}>
-        find countries: <input onChange={inputCountry} />
-      </form>
+      <FormCountry inputCountry={inputCountry} />
       <CountryInfo countriesToShow={countriesToShow} />
     </div>
   );

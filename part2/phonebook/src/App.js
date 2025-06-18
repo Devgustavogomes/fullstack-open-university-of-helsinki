@@ -23,9 +23,9 @@ const App = () => {
       .getAll()
       .then(listPerson => setPersons(listPerson))
       .catch((error) => {
-        setErrorMessage(`ERROR: ${error}`)
+        setErrorMessage(error.message)
         setTimeout(() => {
-          setErrorMessage(null)
+          setErrorMessage(error.message)
         }, 5000)
       })
   }, [])
@@ -48,13 +48,11 @@ const App = () => {
           setPersons(persons.concat(newPerson))
         })
         .catch((error) => {
-          setErrorMessage(`ERROR: ${error}`)
+          setErrorMessage(error.message)
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)
         })
-
-
     } else {
       if (window.confirm(`${newName} is already added to phonebook, you want change?`)) {
         const changePerson = persons.find(person => person.name === newName)
@@ -62,23 +60,21 @@ const App = () => {
         const personChanged = { ...changePerson, number: newNumber }
         PhoneServices
           .change(personId, personChanged)
-          .then((returnedPerson => setPersons(persons.map(person => {
+          .then((returnedPerson) => {
+            setPersons(persons.map(person =>
+              person.id !== personId ? person : returnedPerson
+            ))
             setConfirmMessage(`Changed ${newName}`)
             setTimeout(() => {
               setConfirmMessage(null)
             }, 5000)
-            return person.id !== personId ? person : returnedPerson
-          }
-          ))))
+          })
           .catch((error) => {
-            setErrorMessage(`ERROR: ${error}`)
+            setErrorMessage(error.message)
             setTimeout(() => {
               setErrorMessage(null)
             }, 5000)
           })
-
-
-
       }
     }
   }
@@ -95,7 +91,7 @@ const App = () => {
           setPersons(persons.filter(p => p.id !== id))
         })
         .catch((error) => {
-          setErrorMessage(`ERROR: ${error}`)
+          setErrorMessage(error.message)
           setTimeout(() => {
             setErrorMessage(null)
           }, 5000)

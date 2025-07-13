@@ -13,9 +13,6 @@ morgan.token('body', function (req) { return JSON.stringify(req.body) })
 
 app.use(morgan(':method :url :status - :response-time ms :body'))
 
-
-
-
 app.get('/api/people', async (request, response, next) => {
   try {
     const result = await Person.find({})

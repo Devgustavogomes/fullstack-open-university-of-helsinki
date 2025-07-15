@@ -9,13 +9,13 @@ const config = require('./utils/config')
 const app = express()
 
 async function connectDB(){
-    try {
-        await mongoose.connect(config.MONGODB_URI)
+  try {
+    await mongoose.connect(config.MONGODB_URI)
 
-        logger.info('connected to MongoDB')
-    } catch (error) {
-        logger.error('error connection to MongoDB:', error.message)
-    }
+    logger.info('connected to MongoDB')
+  } catch (error) {
+    logger.error('error connection to MongoDB:', error.message)
+  }
 }
 
 

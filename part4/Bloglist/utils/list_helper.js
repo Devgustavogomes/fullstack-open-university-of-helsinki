@@ -49,7 +49,7 @@ const listOfBlogs = [
   }
 ]
 
-const dummy = (blogs) => {
+const dummy = () => {
   return 1
 }
 

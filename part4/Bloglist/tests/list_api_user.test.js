@@ -6,10 +6,12 @@ const api = supertest(app)
 
 beforeEach( async () => {
   await User.deleteMany({})
+  const count = await User.countDocuments({})
+  console.log('Deleted. Remaining users:', count)
 })
 
 
-describe('error to create a new user' , () => {
+describe('create a new user' , () => {
   test('error username', async () => {
     const user = {
       username: 'de',
@@ -35,7 +37,7 @@ describe('error to create a new user' , () => {
   test('create successful', async () => {
     const initialUsers = await User.countDocuments({})
     const user = {
-      username: 'devv',
+      username: 'dev3',
       name: 'gustavo',
       password: 'aaaa'
     }

@@ -7,7 +7,7 @@ const bcrypt = require('bcrypt')
 userRouter.get('/', async(request,response) => {
   const users = await User.find({})
   const populatedUsers = await Promise.all(
-    users.map(user => user.populate('notes'))
+    users.map(user => user.populate('blogs'))
   )
   response.send(populatedUsers)
 })

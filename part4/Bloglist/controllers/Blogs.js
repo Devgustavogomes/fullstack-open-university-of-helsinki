@@ -1,17 +1,27 @@
 const blogRouter = require('express').Router()
 const Blog = require('../models/Blog')
-const User = require('../models/User')
+
 blogRouter.get('/', async (request, response) => {
   const result = await Blog.find({})
 
   response.send(result)
 })
 
+
 blogRouter.post('/', async (request, response) => {
 
   const body = request.body
 
-  const user = await User.findOne()
+
+  const user = request.user
+
+  if (!user) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+
+  if(!body.title || !body.url){
+    return response.status(400).end()
+  }
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -20,12 +30,9 @@ blogRouter.post('/', async (request, response) => {
     user: user._id
   })
 
-  if(!body.title || !body.url){
-    response.status(400).end()
-  }
   const savedBlog = await blog.save()
 
-  user.notes = user.notes.concat(savedBlog._id)
+  user.blogs = user.blogs.concat(savedBlog._id)
   await user.save()
 
   await savedBlog.populate('user', { username:1, name:1 })
@@ -33,6 +40,14 @@ blogRouter.post('/', async (request, response) => {
 })
 
 blogRouter.delete('/:id', async (request, response) => {
+
+  const user = request.user
+  const blog = await Blog.findById(request.params.id)
+
+  if(blog.user.toString() !== user._id.toString()){
+    response.status(401).send({ error: 'You do not have permission to modify this blog post.' })
+  }
+
   await Blog.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })

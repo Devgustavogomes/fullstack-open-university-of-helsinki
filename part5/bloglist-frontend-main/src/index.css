@@ -1,0 +1,32 @@
+.form{
+  display: flex;
+  flex-direction: column;
+  width: 10%;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 1.5rem 0 2.5rem 0;
+}
+
+.submit{
+  width: 5rem;
+  
+}
+.confirm {
+  color: green;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.error {
+  color: red;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}

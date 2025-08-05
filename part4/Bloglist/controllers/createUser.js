@@ -26,7 +26,7 @@ userRouter.post('/', async (request, response) => {
     username: username,
     name: name,
     passwordHash: passwordHash,
-    notes: []
+    blogs: []
   })
 
   await user.save()

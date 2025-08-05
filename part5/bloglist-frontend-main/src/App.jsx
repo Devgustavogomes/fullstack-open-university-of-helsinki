@@ -46,9 +46,10 @@ const App = () => {
       <LoginForm handleLogin={handleLogin}/>
     )
   }
+
   return (
     <div>
-      <h2>blogs</h2>
+      <h2>Blogs</h2>
       <p>{`${user.username} logged in`}</p>
       <button onClick={handleLogout}>Logout</button>
       {blogs.map(blog =>

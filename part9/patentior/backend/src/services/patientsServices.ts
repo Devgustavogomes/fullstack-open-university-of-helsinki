@@ -1,7 +1,7 @@
 import { Gender } from './../../../frontend/src/types';
 import patients from '../data/patients';
-
 import type { PatientWithoutSSN } from '../types/types';
+
 
 export const getPatients = (): PatientWithoutSSN[]=>{
     return patients as PatientWithoutSSN[];
@@ -16,3 +16,4 @@ export const getPatientsWithoutsSSN= ():PatientWithoutSSN[]=>{
     occupation
   }));
 };
+

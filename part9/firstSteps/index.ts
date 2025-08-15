@@ -8,7 +8,7 @@ interface ExerciseRequestBody{
   daily_exercises: number[];
   target: number;
 }
-app.use(express.json())
+app.use(express.json());
 app.get('/', (_req, res) => {
   res.status(200).json({message: 'Hello Full Stack!'});
 });

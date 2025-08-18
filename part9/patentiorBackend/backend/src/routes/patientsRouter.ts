@@ -3,8 +3,9 @@ import {z} from 'zod';
 import type { NextFunction, Request, Response } from "express";
 import type { IPatients, NewPatient, PatientWithoutSSN } from "../types/types";
 import { newEntrySchema } from '../validations/patientValidations';
-import { getPatientsWithoutsSSN } from "../services/patientsServices";
+import { getPatientsWithoutsSSN, getPatientById } from "../services/patientsServices";
 import { v4 as uuid} from 'uuid';
+import patients from "../data/patients";
 const patientsRouter = express.Router();
 
 patientsRouter.get('/', (req: Request,res: Response<PatientWithoutSSN[]>)=>{
@@ -25,12 +26,33 @@ const errorMiddleware = (error: unknown, _req: Request, res: Response, next: Nex
   }
 };
 
-patientsRouter.post('/', newPatientParse, (req: Request<unknown,unknown,NewPatient>, res: Response<IPatients>) =>{
-    const data = req.body;
+patientsRouter.get('/:id', (req: Request,res: Response)=>{
+    const {id} = req.params;
+    if(!id){
+      return res.status(404).json({error: 'Id not found'});
+    }
+    const patients = getPatientById(id);
+    if(!patients){
+      return res.status(404).json({error: 'Patients not found'});
+    }
+    const returnPatient = {
+      ...patients
+    };
+    return res.status(200).json(returnPatient);
+});
+
+
+patientsRouter.post('/', newPatientParse, (req: Request<unknown,unknown,NewPatient>, res: Response<IPatients | {error: string}>) =>{
+    const result = newEntrySchema.safeParse(req.body);
+    if(!result.success){
+      return res.status(400).json({error: 'Invalid Input'});
+    }
     const newPatient = {
         id: uuid(),
-        ...data
+        ...result.data,
+        entries: []
     };
+    patients.concat(newPatient);
     return res.status(201).json(newPatient);  
 });
 

@@ -6,5 +6,5 @@ export const newEntrySchema = z.object({
     dateOfBirth: z.string().date(),
     ssn: z.string(),
     gender: z.enum(Gender),
-    occupation: z.string()
+    occupation: z.string(),
 });

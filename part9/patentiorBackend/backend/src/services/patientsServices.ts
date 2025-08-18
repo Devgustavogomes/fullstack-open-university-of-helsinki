@@ -17,3 +17,9 @@ export const getPatientsWithoutsSSN= ():PatientWithoutSSN[]=>{
   }));
 };
 
+export const getPatientById = (id: string)=>{
+  const patient = patients.find(patient => patient.id === id);
+  
+  return patient;
+};
+

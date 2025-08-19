@@ -30,7 +30,7 @@ export interface HealthCheckEntry extends BaseEntry {
   healthCheckRating: HealthCheckRating;
 }
 
-interface Hospital extends BaseEntry{
+export interface Hospital extends BaseEntry{
     type: 'Hospital',
     discharge: {
         date: string,
@@ -45,10 +45,13 @@ export interface OccupationalHealthcare extends BaseEntry{
         startDate: string,
         endDate: string
     }
-
-
 }
 export type Entry = Hospital | HealthCheckEntry | OccupationalHealthcare;
+
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
+
+export type NewEntry = UnionOmit<Entry, 'id'>
 
 
 export interface Patient {

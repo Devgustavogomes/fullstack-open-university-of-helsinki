@@ -1,0 +1,9 @@
+docker run -it ubuntu bash
+mkdir -p /usr/src/app
+touch /usr/src/app/index.js
+exit
+docker container run --help
+docker container run --rm ubuntu ls
+docker ps
+docker start stoic_banzai
+docker kill stoic_banzai

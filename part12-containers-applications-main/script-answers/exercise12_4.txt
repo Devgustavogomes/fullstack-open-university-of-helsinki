@@ -1,0 +1,5 @@
+apt update
+apt install curl -y
+curl -sL https://deb.nodesource.com/setup_20.x | bash
+pt-get install nodejs -y
+node /usr/src/app/index.js

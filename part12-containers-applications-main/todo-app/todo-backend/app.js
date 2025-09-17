@@ -3,6 +3,7 @@ const logger = require("morgan");
 const cors = require("cors");
 
 require("./mongo");
+require("./redis");
 
 const indexRouter = require("./routes/index");
 const todosRouter = require("./routes/todos");

@@ -1,0 +1,72 @@
+services:
+  app:
+    image: todo-front-dev
+    build:
+      context: ./todo-frontend
+      dockerfile: dev.Dockerfile
+    env_file:
+      - ./todo-frontend/.env
+    volumes:
+      - ./todo-frontend:/usr/src/app
+      - /usr/src/app/node_modules
+
+    ports:
+      - 5173:5173
+    container_name: todo-front-dev
+  nginx:
+    image: nginx:1.20.1
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    container_name: reverse-proxy
+    depends_on:
+      - app
+      - server
+  mongo:
+    image: mongo
+    ports:
+      - "3456:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: the_database
+    volumes:
+      - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ./todo-backend/mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis
+    ports:
+      - "3455:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - ./todo-backend/redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  server:
+    image: todo-backend-server
+    build:
+      context: ./todo-backend
+      dockerfile: dev.Dockerfile
+    env_file:
+      - /todo-backend/.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./todo-backend:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
